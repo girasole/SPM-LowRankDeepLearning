@@ -1,6 +1,6 @@
 ## Singular Value Plotting of Large Models
 This is the codebase to reproduce the low-rank singular value figures for the DLN, MLP, ViT and VGG16 networks.
-We provide all model checkpoints to reproduce the figures in the following link:
+We provide all model checkpoints to reproduce the figures in the following link: https://drive.google.com/drive/folders/1HkPGO5SpRCmg4Em8vMy6Oh4yzM-sSgeY?usp=drive_link
 
 The folder `SPM-Weights/Header-Weights` contains the necessary files to generate the singular values plots for DLN + MLP + ViT + VGG16.
 
