@@ -1,30 +1,25 @@
-# Singular Value Plotting of Large Models
+## Singular Value Plotting of Large Models
 This is the codebase to reproduce the low-rank singular value figures for the DLN, MLP, ViT and VGG16 networks.
-
-# Usage Examples
 We provide all model checkpoints to reproduce the figures in the following link:
 
 The folder `SPM-Weights/Header-Weights` contains the necessary files to generate the singular values plots for DLN + MLP + ViT + VGG16.
 
 The folder `SPM-Weights/viT-Weights` contains the necessary files to generate the singular values plots for the ViT qkv and fc weights.
 
-`python train_cifar10.py` # vit-patchsize-4
+## Usage Examples
 
-`python train_cifar10.py  --size 48` # vit-patchsize-4-imsize-48
+`python3 compute_weights_qkv.py` # This generates all 3D plots for the QKV weights of the ViT
 
-`python train_cifar10.py --patch 2` # vit-patchsize-2
+`python3 plot_all_svals.py` # This generates the main figure with the svals of all four networks (both 2D and 3D)
 
-`python train_cifar10.py --net vit_small --n_epochs 400` # vit-small
+`python3 sval_2d_plotter.py` # This generates the singular value plots for the ViT network across different layers
 
-`python train_cifar10.py --net vit_timm` # train with pretrained vit
+## Training the Networks
 
-`python train_cifar10.py --net convmixer --n_epochs 400` # train with convmixer
+You can also train the networks using the following:
 
-`python train_cifar10.py --net mlpmixer --n_epochs 500 --lr 1e-3`
+`python3 train_save_weights.py` # For ViT and VGG on CIFAR-10
 
-`python train_cifar10.py --net cait --n_epochs 200` # train with cait
+`python3 dln_main.py` # For DLN on MNIST
 
-`python train_cifar10.py --net swin --n_epochs 400` # train with SwinTransformers
-
-`python train_cifar10.py --net res18` # resnet18+randaug
-
+`python3 mlp_main.py` # For MLP on MNIST
