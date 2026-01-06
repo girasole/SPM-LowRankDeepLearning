@@ -4,7 +4,7 @@ We provide all model checkpoints to reproduce the figures in the following link:
 
 The folder `SPM-Weights/Header-Weights` contains the necessary files to generate the singular values plots for DLN + MLP + ViT + VGG16.
 
-The folder `SPM-Weights/viT-Weights` contains the necessary files to generate the singular values plots for the ViT qkv and fc weights.
+The folder `SPM-Weights/ViT-Weights` contains the necessary files to generate the singular values plots for the ViT qkv and fc weights.
 
 ## Usage Examples
 
