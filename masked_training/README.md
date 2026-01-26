@@ -22,6 +22,49 @@ utils/
 main.py  # Main script to run experiments
 ```
 
+## Reproducing Paper Figures
+
+This section describes how to reproduce **Figure 3** and **Figure 10** from the paper. The following commands generate both figures.
+
+### Experiment Commands
+
+**Deep Linear Network:**
+```bash
+python main.py --dataset synthetic --model deeplinear --hidden_dims 20,20 --loss mse --meta_experiment --dropout_ratios 0.0,0.3,0.6,0.9 --num_seeds 3 --epochs 20 --experiment_name deeplinear
+```
+
+**MLP:**
+```bash
+python main.py --dataset synthetic --model mlp --hidden_dims 20,20 --loss mse --meta_experiment --dropout_ratios 0.0,0.3,0.6,0.9 --num_seeds 3 --epochs 20 --experiment_name mlp
+```
+
+**ResNet:**
+```bash
+python main.py --dataset cifar10 --model resnet --loss crossentropy --meta_experiment --dropout_ratios 0.0,0.3,0.6,0.9 --num_seeds 3 --epochs 20 --experiment_name resnet
+```
+
+### Figure 3: Singular Values of Activations Over Training Epochs
+
+Figure 3 shows the singular values of activations of the last layer in deep architectures trained with dropout rate 60%, as a function of training epoch. Deep Linear Network (DLN) and Multi-Layer Perceptron (MLP) are trained on synthetic data with MSE loss, while ResNet is trained on CIFAR-10 dataset with cross-entropy loss.
+
+**Output Figure Paths:**
+
+- **Figure 3(a)**: `results/<deeplinear_experiment_name>/epoch_plots/dropout_0.6/seed_42/network.4_singular_values_normalized_plot.pdf`
+- **Figure 3(b)**: `results/<mlp_experiment_name>/epoch_plots/dropout_0.6/seed_42/network.6_singular_values_normalized_plot.pdf`
+- **Figure 3(c)**: `results/<resnet_experiment_name>/epoch_plots/dropout_0.6/seed_42/layer4_singular_values_normalized_plot.pdf`
+
+### Figure 10: Singular Values by Dropout Rate
+
+Figure 10 shows the singular values of activations of the first and last layers in deep architectures from masked training with varying dropout rates. Deep Linear Network (DLN) is trained on synthetic data with MSE loss, while ResNet is trained on CIFAR-10 dataset with cross-entropy loss.
+
+**Output Figure Paths:**
+
+- **Figure 10(a)**: `results/<deeplinear_experiment_name>/network.0_singular_values_by_dropout_linear.pdf`
+- **Figure 10(b)**: `results/<deeplinear_experiment_name>/network.4_singular_values_by_dropout_linear.pdf`
+- **Figure 10(c)**: `results/<resnet_experiment_name>/layer1_singular_values_by_dropout.pdf`
+- **Figure 10(d)**: `results/<resnet_experiment_name>/layer4_singular_values_by_dropout.pdf`
+
+
 ## Usage
 
 ### Basic Training with Singular Value Analysis
