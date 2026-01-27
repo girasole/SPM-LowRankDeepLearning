@@ -13,7 +13,7 @@ The code to reproduce Figures 4, 5 and 7 is available in the folder `low_dim_sub
 
 ![example](https://github.com/girasole/SPM-LowRankDeepLearning/blob/main/get_large_model_svals/Figures/svals_all_kwon_3d.png)
 
-The code to reproduce Figures 1, 9 and 11 is available in the folder `get_large_model_svals`  
+The code to reproduce Figures 1, 9 and 11 is available in the folder `get_large_model_svals`.
 
 ## Masked Training
 
