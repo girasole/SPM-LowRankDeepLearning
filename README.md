@@ -5,7 +5,7 @@ This is the official repository to reproduce the results in the paper.
 
 ## Low-Dimensional Subspace Results
 
-![Figure 4](low_dim_subspace/figure_4_3d.pdf)
+![Figure 4](low_dim_subspace/figure_4_3d.png)
 
 The code to reproduce Figures 4, 5 and 7 is available in the folder `low_dim_subspace`.
 
