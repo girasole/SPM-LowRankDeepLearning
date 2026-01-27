@@ -21,6 +21,7 @@ from common.models import (
     get_lora_bert_model,
     get_lora_filter_spec,
 )
+from common.plot_utils import plot_series
 from common.train import TrainState, train
 from common.utils import create_rng_stream, get_step_vals
 
@@ -43,7 +44,7 @@ def get_params_static(
 
 def get_results():
 
-    # figure 6ab
+    # Figure 7ab
     iterator = create_bert_data_iterator(key=next(RNG_STREAM), batch_size=16)
     params, static = get_params_static(3, None, False)
     lr_schedule = optax.linear_schedule(
@@ -69,17 +70,17 @@ def get_results():
                 2000,
             ]
         ),
-        experiment_name="figure_6ab",
+        experiment_name="figure_7ab",
     )
 
-    # figure 6c
+    # Figure 7c
     params, static = get_params_static(2, 8, True)
     init_state = TrainState(params=params, static=static, tx=optax.adam(1e-4, eps=1e-6))
     train(
         init_state,
         iterator,
         save_steps=jnp.array([500]),
-        experiment_name="figure_6c_vanilla",
+        experiment_name="figure_7c_vanilla",
     )
 
     params, static = get_params_static(3, None, False)
@@ -88,7 +89,7 @@ def get_results():
         init_state,
         iterator,
         save_steps=jnp.array([500]),
-        experiment_name="figure_6c_deep",
+        experiment_name="figure_7c_deep",
     )
 
 
@@ -112,10 +113,12 @@ def plot_results():
     fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(20, 5))
     axes: list[Axes]
 
-    # Figure 6a
-    save_steps = get_step_vals("figure_6ab")
+    # 2D Plot
+
+    # Figure 7a
+    save_steps = get_step_vals("figure_7ab")
     params, _ = get_params_static(3, None, False)
-    end_to_end_list = get_list_of_end_to_end(save_steps[-1], "figure_6ab", params)
+    end_to_end_list = get_list_of_end_to_end(save_steps[-1], "figure_7ab", params)
     sval_list = [svdvals(np.array(x)) for x in end_to_end_list]
 
     axes[0].set_prop_cycle(
@@ -126,7 +129,7 @@ def plot_results():
     for sval in sval_list:
         axes[0].semilogy(sval, linewidth=2, alpha=0.8)
 
-    # Figure 6b
+    # Figure 7b
     if not os.path.exists("deep_lora_subspaces.pkl"):
         left_series = jtu.tree_map(
             np.array,
@@ -135,7 +138,7 @@ def plot_results():
                 *(
                     [
                         jnp.linalg.svd(x)[0][:, :8]
-                        for x in get_list_of_end_to_end(step, "figure_6ab", params)
+                        for x in get_list_of_end_to_end(step, "figure_7ab", params)
                     ]
                     for step in tqdm(save_steps)
                 ),
@@ -165,13 +168,13 @@ def plot_results():
     axes[1].set_ylabel("Cosine Angle", fontsize=16)
     axes[1].tick_params(axis="both", which="major", labelsize=14)
 
-    # Figure 6c
+    # Figure 7c
     params2, _ = get_params_static(2, 8, True)
-    end_to_end_list2 = get_list_of_end_to_end(500, "figure_6c_vanilla", params2)
+    end_to_end_list2 = get_list_of_end_to_end(500, "figure_7c_vanilla", params2)
     rank2 = [compute_matrix_rank(np.array(x), 8) for x in end_to_end_list2]
 
     params3, _ = get_params_static(3, None, False)
-    end_to_end_list3 = get_list_of_end_to_end(500, "figure_6c_deep", params3)
+    end_to_end_list3 = get_list_of_end_to_end(500, "figure_7c_deep", params3)
     rank3 = [compute_matrix_rank(np.array(x), 8) for x in end_to_end_list3]
 
     sns.histplot(rank2, ax=axes[2], color="orange", discrete=True)
@@ -180,7 +183,55 @@ def plot_results():
     axes[2].set_ylabel("Count", fontsize=16)
     axes[2].legend(["Vanilla LoRA", "Deep LoRA"], fontsize=12)
 
-    fig.savefig("figure_6.pdf", bbox_inches="tight")
+    fig.savefig("figure_7_2d.pdf", bbox_inches="tight")
+
+    # 3D Plot
+
+    # Figure 7a
+    fig = plt.figure()
+    series = jnp.array(sval_list)[:, :10]
+    ax = fig.add_subplot(111, projection="3d")
+    ax.set_xlabel("\nSV Index", fontsize=14)
+    ax.set_ylabel("Adapted Layer", fontsize=14)
+    ax.set_yticks([])
+    ax.set_yticklabels([])
+    plot_series(ax, series, color="plasma", zoom=0.8, alpha=1.0, linewidth=0)
+    fig.savefig("figure_7a_3d.pdf", bbox_inches="tight")
+
+    # Figure 7b
+    fig = plt.figure()
+    series = jnp.array(angles_series)
+    ax = fig.add_subplot(111, projection="3d")
+    plot_series(
+        ax,
+        series,
+        color="plasma",
+        y_points=save_steps,
+        zoom=0.8,
+        elev=30,
+        azim=-130,
+        roll=0,
+        linewidth=2.5,
+        alpha=1.0,
+        line_plot=True,
+    )
+    ax.set_xticks(np.linspace(0, save_steps[-1] + 1, 5, dtype=int))
+    ax.set_xlabel("\nIteration", fontsize=14)
+    ax.set_ylabel("Adapted Layer", fontsize=14)
+    ax.set_yticks([])
+    ax.set_yticklabels([])
+    ax.set_zlabel("Cosine Angle", fontsize=14)  # type: ignore
+    fig.savefig("figure_7b_3d.pdf", bbox_inches="tight")
+
+    # Figure 7c individually
+    fig, ax = plt.subplots(figsize=(6, 5))
+    sns.histplot(rank2, ax=ax, color="orange", discrete=True)
+    sns.histplot(rank3, ax=ax, color="blue", discrete=True)
+    ax.set_xlabel("Rank", fontsize=16)
+    ax.set_ylabel("Count", fontsize=16)
+    ax.legend(["Vanilla LoRA", "Deep LoRA"], fontsize=12)
+
+    fig.savefig("figure_7c_3d.pdf", bbox_inches="tight")
 
 
 if __name__ == "__main__":
