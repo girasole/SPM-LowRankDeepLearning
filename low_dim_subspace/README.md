@@ -51,14 +51,6 @@ pip install -r requirements.txt
 
 The repository includes scripts to generate figures from the experiments. All figure scripts are located in the `scripts/` directory.
 
-### Available Figures
-
-- **Figure 4**: Matrix factorization experiments (30×30 symmetric matrix)
-- **Figure 5**: LoRA-BERT experiments
-- **Figure 7**: Deep LoRA subspace analysis
-
-### Running Figure Scripts
-
 To generate a specific figure, run:
 
 ```bash
