@@ -11,4 +11,8 @@ The code to reproduce Figures 1, 9 and 11 is available in the folder `get_large_
 
 ## Masked Training
 
-The code to reproduce Figures ...
+![Figure 3](masked_training/figures/figure3.png)
+
+![Figure 10](masked_training/figures/figure10.png)
+
+The code to reproduce Figures 3 and 10 is available in the folder `masked_training`.
